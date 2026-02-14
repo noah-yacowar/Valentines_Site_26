@@ -385,3 +385,117 @@ html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Seg
   .modal-content{ grid-template-columns: 1fr; }
   .modal-image-wrap{ min-height: 280px; }
 }
+
+/* ---------------------------
+   Mobile layout: bottom sheet
+   --------------------------- */
+@media (max-width: 720px) {
+  /* Top bar becomes simpler and full-width */
+  .topbar{
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    gap: 8px;
+  }
+
+  .search{
+    height: 42px;
+    padding: 0 10px;
+  }
+
+  .search-chip{
+    display: none; /* less clutter on mobile */
+  }
+
+  .icon-btn{
+    width: 42px;
+    height: 42px;
+  }
+
+  /* Panel becomes a bottom sheet */
+  .panel{
+    top: auto;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    bottom: 8px;
+    height: 44vh;
+    border-radius: 18px;
+    transform: translateY(calc(100% - 64px)); /* collapsed to a “handle” height */
+    transition: transform 220ms ease;
+  }
+
+  /* When "closed" on mobile we actually want it hidden */
+  .panel.closed{
+    transform: translateY(100%);
+  }
+
+  /* When user opens panel (not closed), show full sheet */
+  .panel.open{
+    transform: translateY(0);
+  }
+
+  /* Add a little “grab handle” vibe */
+  .panel-head{
+    position: relative;
+    padding-top: 18px;
+  }
+  .panel-head::before{
+    content: "";
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 44px;
+    height: 5px;
+    border-radius: 999px;
+    background: rgba(0,0,0,0.15);
+  }
+
+  /* Controls spacing so nothing collides at bottom-right */
+  .controls{
+    top: 76px;
+    right: 8px;
+    gap: 8px;
+  }
+
+  .ctrl-btn{
+    width: 42px;
+    height: 42px;
+  }
+
+  .maptype{
+    right: 8px;
+    bottom: 8px;
+  }
+
+  .pegman{
+    left: 8px;
+    bottom: 8px;
+    width: 42px;
+    height: 42px;
+  }
+
+  /* Modal: tighter */
+  .modal{
+    border-radius: 16px;
+  }
+  .modal-image-wrap{
+    min-height: 240px;
+  }
+
+  .img-nav{
+    width: 40px;
+    height: 40px;
+  }
+  .img-nav svg{
+    width: 20px;
+    height: 20px;
+  }
+
+  .img-dots{
+    bottom: 10px;
+    gap: 7px;
+    padding: 7px 9px;
+  }
+}
