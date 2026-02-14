@@ -386,25 +386,27 @@ html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Seg
   .modal-image-wrap{ min-height: 280px; }
 }
 
-/* ---------------------------
-   Mobile layout: bottom sheet
-   --------------------------- */
+
+
+
+
+
+
+
+
+
+/* ===========================
+   MOBILE LAYOUT (<=720px)
+   Left sidebar + modal that matches desktop styling
+   =========================== */
 @media (max-width: 720px) {
-  /* Top bar becomes simpler and full-width */
+
+  /* -------- Top Bar -------- */
   .topbar{
-    top: 8px;
+    top: calc(8px + env(safe-area-inset-top, 0px));
     left: 8px;
     right: 8px;
     gap: 8px;
-  }
-
-  .search{
-    height: 42px;
-    padding: 0 10px;
-  }
-
-  .search-chip{
-    display: none; /* less clutter on mobile */
   }
 
   .icon-btn{
@@ -412,49 +414,52 @@ html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Seg
     height: 42px;
   }
 
-  /* Panel becomes a bottom sheet */
+  .icon-btn svg{
+    width: 20px;
+    height: 20px;
+  }
+
+  .search{
+    height: 42px;
+    padding: 0 10px;
+  }
+
+  .search-icon svg{
+    width: 20px;
+    height: 20px;
+  }
+
+  .search-input{
+    font-size: 14px; /* keep same feel */
+  }
+
+  .search-chip{
+    display: none;
+  }
+
+  /* -------- Sidebar (Left Drawer, same as desktop) -------- */
   .panel{
-    top: auto;
+    top: calc(64px + env(safe-area-inset-top, 0px));
     left: 8px;
-    right: 8px;
-    width: auto;
-    bottom: 8px;
-    height: 44vh;
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    width: min(320px, calc(100vw - 16px));
     border-radius: 18px;
-    transform: translateY(calc(100% - 64px)); /* collapsed to a “handle” height */
+
+    transform: translateX(0);
     transition: transform 220ms ease;
   }
 
-  /* When "closed" on mobile we actually want it hidden */
   .panel.closed{
-    transform: translateY(100%);
+    transform: translateX(calc(-100% - 14px));
   }
 
-  /* When user opens panel (not closed), show full sheet */
-  .panel.open{
-    transform: translateY(0);
+  .memory-list{
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   }
 
-  /* Add a little “grab handle” vibe */
-  .panel-head{
-    position: relative;
-    padding-top: 18px;
-  }
-  .panel-head::before{
-    content: "";
-    position: absolute;
-    top: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 44px;
-    height: 5px;
-    border-radius: 999px;
-    background: rgba(0,0,0,0.15);
-  }
-
-  /* Controls spacing so nothing collides at bottom-right */
+  /* -------- Map Controls -------- */
   .controls{
-    top: 76px;
+    top: calc(76px + env(safe-area-inset-top, 0px));
     right: 8px;
     gap: 8px;
   }
@@ -464,37 +469,93 @@ html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Seg
     height: 42px;
   }
 
+  .ctrl-btn.icon svg{
+    width: 20px;
+    height: 20px;
+  }
+
   .maptype{
     right: 8px;
-    bottom: 8px;
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
   }
 
   .pegman{
     left: 8px;
-    bottom: 8px;
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
     width: 42px;
     height: 42px;
   }
 
-  /* Modal: tighter */
-  .modal{
-    border-radius: 16px;
-  }
-  .modal-image-wrap{
-    min-height: 240px;
+  /* -------- Modal (same look, just constrained height) -------- */
+  .modal-overlay{
+    padding: 12px;
   }
 
+  .modal{
+    width: min(900px, 100%);
+    max-height: calc(92vh - env(safe-area-inset-top, 0px));
+    border-radius: 18px;   /* keep same as desktop */
+    overflow: hidden;
+  }
+
+  /* Keep the same “stacked on mobile” layout */
+  .modal-content{
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  /* Image area: smaller but same vibe */
+  .modal-image-wrap{
+    position: relative;
+    background: #f3f4f6;
+    min-height: 220px;
+    max-height: 40vh;
+  }
+
+  .modal-img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Text: same fonts, just scroll if needed */
+  .modal-text{
+    padding: 18px 18px 16px; /* same as desktop */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    max-height: 45vh;
+  }
+
+  .modal-title{ font-size: 20px; font-weight: 800; } /* same as desktop */
+  .modal-date{ color: var(--muted); font-size: 13px; } /* same as desktop */
+  .modal-desc{ line-height: 1.5; font-size: 15px; }   /* same as desktop */
+
+  /* Arrows: properly centered + consistent */
   .img-nav{
     width: 40px;
     height: 40px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    padding: 0;
   }
+
+  .img-nav.left{ left: 10px; }
+  .img-nav.right{ right: 10px; }
+
   .img-nav svg{
     width: 20px;
     height: 20px;
   }
 
+  /* Dots: same placement, slightly tighter */
   .img-dots{
+    left: 50%;
     bottom: 10px;
+    transform: translateX(-50%);
     gap: 7px;
     padding: 7px 9px;
   }
