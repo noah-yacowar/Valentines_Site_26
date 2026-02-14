@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>The Map of Us</title>
+  <link rel="icon" type="image/png" href="favicon">
+
+  <!-- Leaflet -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+    defer
+  ></script>
+
+  <link rel="stylesheet" href="style.css" />
+  <script src="app.js" defer></script>
+</head>
+
+<body>
+  <div class="app">
+    <!-- Top bar -->
+    <header class="topbar">
+      <button id="menuBtn" class="icon-btn" title="Menu" aria-label="Menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <div class="search">
+        <div class="search-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16Zm11 3-6-6"
+              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <input class="search-input" type="text" placeholder="Search places…" disabled />
+        <div class="search-chip" title="Project name">The Map of Us</div>
+      </div>
+
+      <button id="shareBtn" class="icon-btn" title="Share (copies link)" aria-label="Share">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M16 8a3 3 0 1 0-2.83-4H13a3 3 0 0 0 3 4ZM6 14a3 3 0 1 0 2.83 4H9a3 3 0 0 0-3-4Zm10 1-8-4m8-2-8 4"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Left panel -->
+    <aside id="sidePanel" class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Memories</div>
+        <button id="panelCloseBtn" class="icon-btn small" title="Close" aria-label="Close panel">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="panel-sub">Click an item to jump to it.</div>
+      <div id="memoryList" class="memory-list"></div>
+
+      <div class="panel-foot">
+        <div class="hint">Wow so many memories :O</div>
+      </div>
+    </aside>
+
+    <!-- Map -->
+    <main class="map-wrap">
+      <div id="map" class="map"></div>
+
+      <!-- Right controls -->
+      <div class="controls">
+        <div class="control-group">
+          <button id="zoomInBtn" class="ctrl-btn" title="Zoom in" aria-label="Zoom in">+</button>
+          <button id="zoomOutBtn" class="ctrl-btn" title="Zoom out" aria-label="Zoom out">−</button>
+        </div>
+
+        <!-- My location (target icon) -->
+        <button id="locateBtn" class="ctrl-btn icon" title="My location" aria-label="My location">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2v3M12 19v3M2 12h3M19 12h3"
+                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="2"/>
+            <circle cx="12" cy="12" r="2" fill="currentColor"/>
+          </svg>
+        </button>
+
+        <!-- Show all (heart icon) -->
+        <button id="fitBtn" class="ctrl-btn icon" title="Show all memories" aria-label="Show all memories">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M12 20.5
+                 C10 18.8 4 14.6 4 9.8
+                 C4 7.2 5.8 5.5 8.2 5.5
+                 C9.8 5.5 11 6.3 12 7.6
+                 C13 6.3 14.2 5.5 15.8 5.5
+                 C18.2 5.5 20 7.2 20 9.8
+                 C20 14.6 14 18.8 12 20.5 Z"
+              fill="currentColor"/>
+          </svg>
+        </button>
+
+        <button id="fullscreenBtn" class="ctrl-btn icon" title="Fullscreen" aria-label="Fullscreen">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"
+              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <button id="resetBtn" class="ctrl-btn icon" title="Reset view" aria-label="Reset view">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 12a9 9 0 1 1-3-6.7M21 3v6h-6"
+              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Map type toggle -->
+      <div class="maptype">
+        <button id="mapTypeBtn" class="maptype-btn" title="Toggle map type">
+          <span class="maptype-thumb" aria-hidden="true"></span>
+          <span id="mapTypeLabel" class="maptype-label">Map</span>
+        </button>
+      </div>
+
+      <!-- Pegman vibe -->
+      <button id="pegmanBtn" class="pegman" title="Street View" aria-label="Street View">
+        <span aria-hidden="true">🙂</span>
+      </button>
+    </main>
+
+    <!-- Modal -->
+    <div id="modalOverlay" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Memory details">
+      <div class="modal">
+        <button id="closeModal" class="close" aria-label="Close">✕</button>
+
+        <div class="modal-content">
+          <div class="modal-image-wrap">
+            <button id="imgPrev" class="img-nav left" aria-label="Previous photo">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15 18l-6-6 6-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"/>
+            </svg>
+            </button>
+            <img id="modalImg" class="modal-img" alt="Memory photo" />
+            <button id="imgNext" class="img-nav right" aria-label="Next photo">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 6l6 6-6 6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"/>
+            </svg>
+            </button>
+
+            <!-- Dots -->
+            <div id="imgDots" class="img-dots" aria-label="Photo selector"></div>
+          </div>
+
+          <div class="modal-text">
+            <div id="modalTitle" class="modal-title">Title</div>
+            <div id="modalDate" class="modal-date">Date</div>
+            <div id="modalDesc" class="modal-desc">Description</div>
+
+            <div class="modal-footer">
+              <div id="modalLocation" class="modal-loc"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  </div>
+</body>
+</html>
